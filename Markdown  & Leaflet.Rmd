@@ -23,8 +23,8 @@ The popup presents :
   The number of people who suspected as a drunk driver. 
   The number of people who suspected in drugs use. 
   The Map uses a control option to select and show the car accidents per specific month 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
 Load libraries.

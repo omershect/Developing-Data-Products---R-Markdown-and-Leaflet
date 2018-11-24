@@ -1,0 +1,59 @@
+---
+title: "Index"
+author: "Omer Shechter"
+date: "23 November 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load libraries 
+```{r}
+library(leaflet)
+library(tidyr)
+library(dplyr)
+```
+
+
+
+Read 2017 Car crash data of Allegheny County.
+```{r}
+DF<-read.csv("CarCrash2017.csv")
+
+```
+
+Subset the location of the car crash 
+```{r}
+dfCrash<-select(DF,DEC_LAT,DEC_LONG,CRASH_MONTH,AUTOMOBILE_COUNT)
+colnames(dfCrash)<-c("latitude","longitude","Month Crash","Number Of Cars involved")
+dfCrash<-dfCrash %>% drop_na()
+```
+
+# 2017 Car crash data of Allegheny County
+```{r echo=FALSE ,message = FALSE}
+dfCrash %>% 
+  leaflet() %>%
+  addTiles() %>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==1),clusterOptions = markerClusterOptions(),group =   "January")%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==2), clusterOptions = markerClusterOptions(),group =   "February")%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==3), clusterOptions = markerClusterOptions(),group =   "March")%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==4), clusterOptions = markerClusterOptions(),group =   "April")%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==5), clusterOptions = markerClusterOptions(),group =   "May")%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==6), clusterOptions = markerClusterOptions(),group =   "June")%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==7), clusterOptions = markerClusterOptions(),group =   "July")%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==8), clusterOptions = markerClusterOptions(),group =   "August")%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==9), clusterOptions = markerClusterOptions(),group =   "September")%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==10), clusterOptions = markerClusterOptions(),group =   "October")%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==11), clusterOptions = markerClusterOptions(),group =   "November")%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==12), clusterOptions = markerClusterOptions(),group =   "December")%>%
+  # Layers control
+  addLayersControl(baseGroups = c("January","February","March","April","May","June","July","August","September","October","November","December"),
+    options = layersControlOptions(collapsed = FALSE)
+  )
+  
+  
+    
+```
+

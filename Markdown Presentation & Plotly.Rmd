@@ -27,54 +27,51 @@ DF<-read.csv("CarCrash2017.csv")
 # Interactive MAP - Total car crash by month
 
 Subset the location of the car crash 
+Keep the month of the crash 
+Create a new column with the months names instead of a number 
+Since there is a large number of the crash 
+There will be an option to show car crash per specific month
 ```{r}
 dfCrash<-select(DF,DEC_LAT,DEC_LONG,CRASH_MONTH)
 colnames(dfCrash)<-c("latitude","longitude","Month Crash")
 dfCrash<-dfCrash %>% drop_na()
+dfCrash<-mutate(dfCrash,Month.Crash.Name=month.name[dfCrash$`Month Crash`])
 ```
 
 
-
+Use a PNG file as an icon for markers on the MAP 
 ```{r}
 
 CarsIcon <- makeIcon("CarsIcon1.png",iconWidth = 45, iconHeight = 45)
 ```
 
+Helper function to add markers 
+```{r}
+
+Add_Marker <- function(my_map,lat_ln_data,groupname,iconMarker=CarsIcon) {
+  addMarkers(my_map,data=lat_ln_data,clusterOptions = markerClusterOptions(),group =groupname,icon = iconMarker)
+  
+}
+
+```
+
 
 # 2017 Car crash data of Allegheny County
 ```{r echo=FALSE ,message = FALSE}
-dfCrash %>% 
+my_map<-dfCrash %>% 
   leaflet() %>%
-  addTiles() %>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==1),clusterOptions = markerClusterOptions(),group =   "January",icon =CarsIcon)%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==2), clusterOptions = markerClusterOptions(),group =   "February",icon =CarsIcon)%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==3), clusterOptions = markerClusterOptions(),group =   "March",icon =CarsIcon)%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==4), clusterOptions = markerClusterOptions(),group =   "April",icon =CarsIcon)%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==5), clusterOptions = markerClusterOptions(),group =   "May",icon =CarsIcon)%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==6), clusterOptions = markerClusterOptions(),group =   "June",icon =CarsIcon)%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==7), clusterOptions = markerClusterOptions(),group =   "July",icon =CarsIcon)%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==8), clusterOptions = markerClusterOptions(),group =   "August",icon =CarsIcon)%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==9), clusterOptions = markerClusterOptions(),group =   "September",icon =CarsIcon)%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==10), clusterOptions = markerClusterOptions(),group =   "October",icon =CarsIcon)%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==11), clusterOptions = markerClusterOptions(),group =   "November",icon =CarsIcon)%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==12), clusterOptions = markerClusterOptions(),group =   "December",icon =CarsIcon)%>%
+  addTiles() 
+
+for (index in 1:12){
+  my_map<-Add_Marker(my_map,subset(dfCrash,dfCrash$`Month Crash`==index),month.name[index])
+  
+}
   # Layers control
-  addLayersControl(baseGroups = c("January","February","March","April","May","June","July","August","September","October","November","December"),
+  addLayersControl(my_map,baseGroups = month.name,
     options = layersControlOptions(collapsed = FALSE)
   )
   
 
 ```
 
-
-# Interactive MAP - Fatlity car crash by month
-
-Add a new column which will contains the number of fatilties.
-
-```{r}
-DF<-mutate(DF,Death.Count=BICYCLE_DEATH_COUNT+BELTED_DEATH_COUNT+MCYCLE_DEATH_COUNT+PED_DEATH_COUNT+UNB_DEATH_COUNT)
-dfCrash<-select(DF,DEC_LAT,DEC_LONG,Death.Count)
-colnames(dfCrash)<-c("latitude","longitude","Death.Count")
-
-```
 

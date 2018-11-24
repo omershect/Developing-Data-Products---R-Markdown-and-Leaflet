@@ -65,7 +65,10 @@ Helper function to add markers
 
 Add_Marker <- function(my_map,lat_ln_data,groupname,content,iconMarker=CarsIcon) {
   
-  addMarkers(my_map,data=lat_ln_data,clusterOptions = markerClusterOptions(),group =groupname,icon = iconMarker,popup = paste("Car involved:", content ))
+  addMarkers(my_map,data=lat_ln_data,clusterOptions = markerClusterOptions(),group =groupname,icon = iconMarker,popup = paste("Car involved:", content$No.Cars.Involved ,"<br>",
+             "Fatality:",content$Death.Count,"<br>",
+              "Drugs Involved :", content$Drug.Involved,"<br>",
+               " Alcohol involved:",content$Driniking.Driver))
   #addPopups(my_map, lat_ln_data$latitude,lat_ln_data$longitude,content)
   
 }
@@ -80,7 +83,7 @@ my_map<-dfCrash %>%
   addTiles() 
 
 for (index in 1:12){
-  my_map<-Add_Marker(my_map,subset(dfCrash,dfCrash$`Month Crash`==index),month.name[index],subset(dfCrash$No.Cars.Involved,dfCrash$`Month Crash`==index))
+  my_map<-Add_Marker(my_map,subset(dfCrash,dfCrash$`Month Crash`==index),month.name[index],subset(dfCrash[,c("No.Cars.Involved","Driniking.Driver","Death.Count","Drug.Involved")],dfCrash$`Month Crash`==1))
   
 }
   # Layers control

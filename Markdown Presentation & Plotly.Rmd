@@ -75,6 +75,12 @@ Add_Marker <- function(my_map,lat_ln_data,groupname,content,iconMarker=CarsIcon)
 
 ```
 
+```{r}
+latitude<-c(40.672842,40.668266,40.549080,40.521991,40.421757,40.392743,40.291685,40.228147,40.194802,40.229574,40.255097,40.331806,40.477968,40.597106,40.607889,40.615364)
+
+longitude<-c(-80.148578,-79.717074,
+             -79.770777, -79.707223,-79.711924,-79.765167,-79.789453,-79.796669,-79.89504,-79.974788,-79.920311, -80.182883, -80.364246,-80.195354,-80.176635,-80.146614)
+```
 
 # 2017 Car crash data of Allegheny County
 ```{r echo=FALSE ,message = FALSE}
@@ -86,12 +92,11 @@ for (index in 1:12){
   my_map<-Add_Marker(my_map,subset(dfCrash,dfCrash$`Month Crash`==index),month.name[index],subset(dfCrash[,c("No.Cars.Involved","Driniking.Driver","Death.Count","Drug.Involved")],dfCrash$`Month Crash`==1))
   
 }
+  
+  
+  #addPolygons(my_map,latitude,longitude, weight = 2, fillColor = "black", group= "CountyBorders")
   # Layers control
   addLayersControl(my_map,baseGroups = month.name,
-    options = layersControlOptions(collapsed = FALSE)
-  )
+    options = layersControlOptions(collapsed = FALSE))
   
-
 ```
-
-

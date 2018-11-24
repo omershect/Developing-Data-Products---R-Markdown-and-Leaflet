@@ -92,7 +92,7 @@ Add_Marker <- function(my_map,lat_ln_data,groupname,content,iconMarker=CarsIcon)
 
 # 2017 Car crash data of Allegheny County
 Create the Interactive MAP using leaflet 
-```{r echo=FALSE ,message = FALSE}
+```{r echo=FALSE ,message = FALSE,fig.width=11,fig.height=11}
 my_map<-dfCrash %>% 
   leaflet() %>%
   addTiles() 

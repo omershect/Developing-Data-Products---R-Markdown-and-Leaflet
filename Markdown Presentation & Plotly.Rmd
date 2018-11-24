@@ -33,23 +33,31 @@ colnames(dfCrash)<-c("latitude","longitude","Month Crash")
 dfCrash<-dfCrash %>% drop_na()
 ```
 
+
+
+```{r}
+
+CarsIcon <- makeIcon("CarsIcon1.png",iconWidth = 45, iconHeight = 45)
+```
+
+
 # 2017 Car crash data of Allegheny County
 ```{r echo=FALSE ,message = FALSE}
 dfCrash %>% 
   leaflet() %>%
   addTiles() %>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==1),clusterOptions = markerClusterOptions(),group =   "January")%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==2), clusterOptions = markerClusterOptions(),group =   "February")%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==3), clusterOptions = markerClusterOptions(),group =   "March")%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==4), clusterOptions = markerClusterOptions(),group =   "April")%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==5), clusterOptions = markerClusterOptions(),group =   "May")%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==6), clusterOptions = markerClusterOptions(),group =   "June")%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==7), clusterOptions = markerClusterOptions(),group =   "July")%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==8), clusterOptions = markerClusterOptions(),group =   "August")%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==9), clusterOptions = markerClusterOptions(),group =   "September")%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==10), clusterOptions = markerClusterOptions(),group =   "October")%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==11), clusterOptions = markerClusterOptions(),group =   "November")%>%
-  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==12), clusterOptions = markerClusterOptions(),group =   "December")%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==1),clusterOptions = markerClusterOptions(),group =   "January",icon =CarsIcon)%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==2), clusterOptions = markerClusterOptions(),group =   "February",icon =CarsIcon)%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==3), clusterOptions = markerClusterOptions(),group =   "March",icon =CarsIcon)%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==4), clusterOptions = markerClusterOptions(),group =   "April",icon =CarsIcon)%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==5), clusterOptions = markerClusterOptions(),group =   "May",icon =CarsIcon)%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==6), clusterOptions = markerClusterOptions(),group =   "June",icon =CarsIcon)%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==7), clusterOptions = markerClusterOptions(),group =   "July",icon =CarsIcon)%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==8), clusterOptions = markerClusterOptions(),group =   "August",icon =CarsIcon)%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==9), clusterOptions = markerClusterOptions(),group =   "September",icon =CarsIcon)%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==10), clusterOptions = markerClusterOptions(),group =   "October",icon =CarsIcon)%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==11), clusterOptions = markerClusterOptions(),group =   "November",icon =CarsIcon)%>%
+  addMarkers(data = subset(dfCrash,dfCrash$`Month Crash`==12), clusterOptions = markerClusterOptions(),group =   "December",icon =CarsIcon)%>%
   # Layers control
   addLayersControl(baseGroups = c("January","February","March","April","May","June","July","August","September","October","November","December"),
     options = layersControlOptions(collapsed = FALSE)
@@ -60,3 +68,13 @@ dfCrash %>%
 
 
 # Interactive MAP - Fatlity car crash by month
+
+Add a new column which will contains the number of fatilties.
+
+```{r}
+DF<-mutate(DF,Death.Count=BICYCLE_DEATH_COUNT+BELTED_DEATH_COUNT+MCYCLE_DEATH_COUNT+PED_DEATH_COUNT+UNB_DEATH_COUNT)
+dfCrash<-select(DF,DEC_LAT,DEC_LONG,Death.Count)
+colnames(dfCrash)<-c("latitude","longitude","Death.Count")
+
+```
+

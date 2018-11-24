@@ -31,12 +31,19 @@ Keep the month of the crash
 Create a new column with the months names instead of a number 
 Since there is a large number of the crash 
 There will be an option to show car crash per specific month
+For informaition to present in popup :
+AUTOMOBILE_COUNT -  the number of cars involved 
+DRINKING_DRIVER - Alcohol involved ? 
+FATAL_COUNT - Total number of death 
+ILLEGAL_DRUG_RELATED - Ilegal drug involvment 
 ```{r}
-dfCrash<-select(DF,DEC_LAT,DEC_LONG,CRASH_MONTH)
-colnames(dfCrash)<-c("latitude","longitude","Month Crash")
+dfCrash<-select(DF,DEC_LAT,DEC_LONG,CRASH_MONTH,AUTOMOBILE_COUNT,DRINKING_DRIVER,FATAL_COUNT,ILLEGAL_DRUG_RELATED)
+colnames(dfCrash)<-c("latitude","longitude","Month Crash","No.Cars.Involved","Driniking.Driver","Death.Count","Drug.Involved")
 dfCrash<-dfCrash %>% drop_na()
 dfCrash<-mutate(dfCrash,Month.Crash.Name=month.name[dfCrash$`Month Crash`])
 ```
+
+
 
 
 Use a PNG file as an icon for markers on the MAP 
@@ -47,9 +54,19 @@ CarsIcon <- makeIcon("CarsIcon1.png",iconWidth = 45, iconHeight = 45)
 
 Helper function to add markers 
 ```{r}
+####################################
+# Add_Marker --- Helper function   #
+#Paramters : 
+#my_map - leaflet object - markeers will be added to this object 
+#lat_ln_data - Data frame with the lat and long (of the required markers 
+#groupname - The group name of the markers
+#popup - Popup content 
+#IconMarker - The icon of the marker
 
-Add_Marker <- function(my_map,lat_ln_data,groupname,iconMarker=CarsIcon) {
-  addMarkers(my_map,data=lat_ln_data,clusterOptions = markerClusterOptions(),group =groupname,icon = iconMarker)
+Add_Marker <- function(my_map,lat_ln_data,groupname,content,iconMarker=CarsIcon) {
+  
+  addMarkers(my_map,data=lat_ln_data,clusterOptions = markerClusterOptions(),group =groupname,icon = iconMarker,popup = paste("Car involved:", content ))
+  #addPopups(my_map, lat_ln_data$latitude,lat_ln_data$longitude,content)
   
 }
 
@@ -63,7 +80,7 @@ my_map<-dfCrash %>%
   addTiles() 
 
 for (index in 1:12){
-  my_map<-Add_Marker(my_map,subset(dfCrash,dfCrash$`Month Crash`==index),month.name[index])
+  my_map<-Add_Marker(my_map,subset(dfCrash,dfCrash$`Month Crash`==index),month.name[index],subset(dfCrash$No.Cars.Involved,dfCrash$`Month Crash`==index))
   
 }
   # Layers control

@@ -1,5 +1,5 @@
 ---
-title: "Index"
+title: "R Markdown and Leaflet - 2017 Car crash data in Allegheny County"
 author: "Omer Shechter"
 date: "23 November 2018"
 output: html_document
@@ -15,19 +15,21 @@ library(leaflet)
 library(tidyr)
 library(dplyr)
 ```
+# Project Summary
 
 
-
-Read 2017 Car crash data of Allegheny County.
+Read 2017 Car crash data in Allegheny County.
 ```{r}
 DF<-read.csv("CarCrash2017.csv")
 
 ```
 
+# Interactive MAP - Total car crash by month
+
 Subset the location of the car crash 
 ```{r}
-dfCrash<-select(DF,DEC_LAT,DEC_LONG,CRASH_MONTH,AUTOMOBILE_COUNT)
-colnames(dfCrash)<-c("latitude","longitude","Month Crash","Number Of Cars involved")
+dfCrash<-select(DF,DEC_LAT,DEC_LONG,CRASH_MONTH)
+colnames(dfCrash)<-c("latitude","longitude","Month Crash")
 dfCrash<-dfCrash %>% drop_na()
 ```
 
@@ -53,7 +55,8 @@ dfCrash %>%
     options = layersControlOptions(collapsed = FALSE)
   )
   
-  
-    
+
 ```
 
+
+# Interactive MAP - Fatlity car crash by month

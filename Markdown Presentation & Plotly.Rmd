@@ -4,55 +4,69 @@ author: "Omer Shechter"
 date: "23 November 2018"
 output: html_document
 ---
+# Project Summary
+This project is the Week 2 assignment of the data product coursera course.
+The project illustrates the work with Maps using leaflet, and the use of R markdown.
+The data set is the car crash data for the year 2017 in Allegheny County.
+The data set is taken from this link :
+https://data.wprdc.org/dataset/allegheny-county-crash-data/resource/bf8b3c7e-8d60-40df-9134-21606a451c1a.
 
+The Interactive map illustrates : 
+Creating a basic map. 
+Adding multiple markers (marking the car crash location).
+Using customize icon to the markers.
+Using clusters.
+Using popup : 
+The popup presents : 
+  The number of cars involves in the crash.
+  The number of deaths (Fatalities ).
+  The number of people who suspected as a drunk driver. 
+  The number of people who suspected in drugs use. 
+  The Map uses a control option to select and show the car accidents per specific month 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Load libraries 
+Load libraries.
 ```{r}
 library(leaflet)
 library(tidyr)
 library(dplyr)
 ```
-# Project Summary
 
 
 Read 2017 Car crash data in Allegheny County.
+Data is loaded from :
+https://data.wprdc.org/datastore/dump/bf8b3c7e-8d60-40df-9134-21606a451c1a
 ```{r}
 DF<-read.csv("CarCrash2017.csv")
 
 ```
-
-# Interactive MAP - Total car crash by month
+# Interactive MAP - Total car crash by month.
 
 Subset the location of the car crash 
-Keep the month of the crash 
-Create a new column with the months names instead of a number 
+Keep the data about the month of the accident.
+Create a new column with the month's names instead of a number. 
 Since there is a large number of the crash 
 There will be an option to show car crash per specific month
-For informaition to present in popup :
+For information to present in a popup :
 AUTOMOBILE_COUNT -  the number of cars involved 
-DRINKING_DRIVER - Alcohol involved ? 
+DRINKING_DRIVER - Alcohol involved? 
 FATAL_COUNT - Total number of death 
-ILLEGAL_DRUG_RELATED - Ilegal drug involvment 
+ILLEGAL_DRUG_RELATED - Ilegal drug involvement 
 ```{r}
 dfCrash<-select(DF,DEC_LAT,DEC_LONG,CRASH_MONTH,AUTOMOBILE_COUNT,DRINKING_DRIVER,FATAL_COUNT,ILLEGAL_DRUG_RELATED)
-colnames(dfCrash)<-c("latitude","longitude","Month Crash","No.Cars.Involved","Driniking.Driver","Death.Count","Drug.Involved")
+colnames(dfCrash)<-c("latitude","longitude","Month Crash","No.Cars.Involved","Drinking.Driver","Death.Count","Drug.Involved")
 dfCrash<-dfCrash %>% drop_na()
 dfCrash<-mutate(dfCrash,Month.Crash.Name=month.name[dfCrash$`Month Crash`])
 ```
 
-
-
-
-Use a PNG file as an icon for markers on the MAP 
+Use a PNG file as an icon for markers on the MAP.
 ```{r}
-
 CarsIcon <- makeIcon("CarsIcon1.png",iconWidth = 45, iconHeight = 45)
 ```
 
-Helper function to add markers 
+Helper function to add markers.
 ```{r}
 ####################################
 # Add_Marker --- Helper function   #
@@ -64,39 +78,34 @@ Helper function to add markers
 #IconMarker - The icon of the marker
 
 Add_Marker <- function(my_map,lat_ln_data,groupname,content,iconMarker=CarsIcon) {
-  
+#Add markers which allow creating multiple markers, with ICON and with popup
+#The cluster option is selected 
   addMarkers(my_map,data=lat_ln_data,clusterOptions = markerClusterOptions(),group =groupname,icon = iconMarker,popup = paste("Car involved:", content$No.Cars.Involved ,"<br>",
              "Fatality:",content$Death.Count,"<br>",
               "Drugs Involved :", content$Drug.Involved,"<br>",
-               " Alcohol involved:",content$Driniking.Driver))
+               " Alcohol involved:",content$Drinking.Driver))
   #addPopups(my_map, lat_ln_data$latitude,lat_ln_data$longitude,content)
   
 }
 
 ```
 
-```{r}
-latitude<-c(40.672842,40.668266,40.549080,40.521991,40.421757,40.392743,40.291685,40.228147,40.194802,40.229574,40.255097,40.331806,40.477968,40.597106,40.607889,40.615364)
-
-longitude<-c(-80.148578,-79.717074,
-             -79.770777, -79.707223,-79.711924,-79.765167,-79.789453,-79.796669,-79.89504,-79.974788,-79.920311, -80.182883, -80.364246,-80.195354,-80.176635,-80.146614)
-```
-
 # 2017 Car crash data of Allegheny County
+Create the Interactive MAP using leaflet 
 ```{r echo=FALSE ,message = FALSE}
 my_map<-dfCrash %>% 
   leaflet() %>%
   addTiles() 
-
+#Create for loop to create 12 groups one for each month 
+# The groups are needed to support interactive control layer 
+# which allow the user to select the month 
 for (index in 1:12){
-  my_map<-Add_Marker(my_map,subset(dfCrash,dfCrash$`Month Crash`==index),month.name[index],subset(dfCrash[,c("No.Cars.Involved","Driniking.Driver","Death.Count","Drug.Involved")],dfCrash$`Month Crash`==1))
+  my_map<-Add_Marker(my_map,subset(dfCrash,dfCrash$`Month Crash`==index),month.name[index],subset(dfCrash[,c("No.Cars.Involved","Drinking.Driver","Death.Count","Drug.Involved")],dfCrash$`Month Crash`==1))
   
 }
-  
-  
-  #addPolygons(my_map,latitude,longitude, weight = 2, fillColor = "black", group= "CountyBorders")
-  # Layers control
+  #Layers control
   addLayersControl(my_map,baseGroups = month.name,
-    options = layersControlOptions(collapsed = FALSE))
+    options = layersControlOptions(collapsed = FALSE)
+  )
   
 ```

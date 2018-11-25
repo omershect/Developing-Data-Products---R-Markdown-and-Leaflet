@@ -93,6 +93,7 @@ Add_Marker <- function(my_map,lat_ln_data,groupname,content,iconMarker=CarsIcon)
 # 2017 Car crash data of Allegheny County
 Create the Interactive MAP using leaflet 
 ```{r echo=FALSE ,message = FALSE,fig.width=11,fig.height=11}
+#These are two vectors which are the lat and lng of the county borders 
 Alat<-c(40.675986,40.663033,40.226055,40.198162,40.233168,40.476416 )
 Alng<-c(-80.147219, -79.703291,-79.799402,-79.883659, -79.971751,-80.355053)
 
@@ -107,7 +108,7 @@ for (index in 1:12){
   my_map<-Add_Marker(my_map,subset(dfCrash,dfCrash$`Month Crash`==index),month.name[index],subset(dfCrash[,c("No.Cars.Involved","Drinking.Driver","Death.Count","Drug.Involved")],dfCrash$`Month Crash`==1))
   
 }
-
+#draw the county borders
 addPolygons(my_map,lng = Alng,lat = Alat,weight = 5,fillOpacity = 0.05,group = "County")%>%
   #Layers control
   addLayersControl(baseGroups = month.name,overlayGroups =  "County",
